@@ -107,6 +107,8 @@ local insertDiarySep = function(list)
     end
 end
 
+---This function scans the diary_path for all files and creates or updates an index file
+---The index is categorized into months and years automatically
 function diary.diaryGenerateIndex()
     local files = getDiaryfiles()
     insertDiarySep(files)
@@ -120,6 +122,8 @@ function diary.diaryGenerateIndex()
     pcall(vim.cmd, "redraw | e")
 end
 
+---Create or open current day's diary entry
+---@param editcmd string eg: "vs","e","tabnew"
 function diary.diaryTodayOpen(editcmd)
     local name = getDate(0)
     local opencmd = editcmd and editcmd .. " " or "e "
@@ -127,6 +131,8 @@ function diary.diaryTodayOpen(editcmd)
     vim.cmd(opencmd .. name)
 end
 
+---Open yesterday's diary entry
+---@param editcmd string eg: "vs","e","tabnew"
 function diary.diaryYesterdayOpen(editcmd)
     local name = getDate(-1)
     local opencmd = editcmd and editcmd .. " " or "e "
@@ -134,6 +140,8 @@ function diary.diaryYesterdayOpen(editcmd)
     vim.cmd(opencmd .. name)
 end
 
+---Create or open tomorrow's diary entry
+---@param editcmd string eg: "vs","e","tabnew"
 function diary.diaryTomorrowOpen(editcmd)
     local name = getDate(1)
     local opencmd = editcmd and editcmd .. " " or "e "
@@ -141,6 +149,8 @@ function diary.diaryTomorrowOpen(editcmd)
     vim.cmd(opencmd .. name)
 end
 
+---Open diary index file
+---@param editcmd string eg: "vs","e","tabnew"
 function diary.diaryIndexOpen(editcmd)
     local opencmd = editcmd and editcmd .. " " or "e "
     exec("cd " .. diaryPath)

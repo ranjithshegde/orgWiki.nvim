@@ -1,6 +1,6 @@
 # orgWiki.nvim
 
-This plugin implements a subset of features from the popular vimwiki plugin for org filetype
+This plugin implements a subset of features from the popular vimwiki plugin for org filetype.
 Written in pure lua
 
 _Note: This plugin is still experimental. Would be grateful for any bug reports or suggestions for improvement where necessary_

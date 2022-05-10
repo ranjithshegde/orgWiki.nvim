@@ -198,6 +198,8 @@ end
 
 local wiki = {}
 
+---Open the default wiki
+---@param editcmd string eg: "vs","e","tabnew"
 function wiki.openIndex(editcmd)
     local opencmd = editcmd and editcmd .. " " or "e "
     local current_path = wikiPath[1]
@@ -206,6 +208,7 @@ function wiki.openIndex(editcmd)
     exec(opencmd .. "Index.org")
 end
 
+---If <cWORD> is not a hyperlink, create hyperlink interactively and jump to the link
 function wiki.followOrCreate()
     local line = vim.api.nvim_get_current_line()
     local word = vim.fn.expand "<cWORD>"
@@ -245,6 +248,7 @@ function wiki.followOrCreate()
     followLink(output)
 end
 
+---Delete hyperlink under cursor
 function wiki.deleteLink()
     local line = vim.api.nvim_get_current_line()
     line = findLinkString(line)
@@ -273,17 +277,9 @@ function wiki.deleteLink()
 
     findAllLinks(vim.api.nvim_get_current_buf())
     clearTextLink()
-
-    -- vim.ui.select({ "yes", "no" }, { prompt = "Delete files /or folders?" }, function(choice)
-    --     if choice == "yes" then
-    --         line = findPath(line)
-    --         print(line)
-    --     else
-    --         return
-    --     end
-    -- end)
 end
 
+---Jump back one step in the hyperlink jump-stack
 function wiki.back()
     local newBuf
     local bufnr = vim.api.nvim_get_current_buf()

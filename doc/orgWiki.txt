@@ -1,6 +1,12 @@
+================================================================================
+                                                                *orgWiki.nvim*
+orgWiki.nvim is a plugin that ands wiki and diary extension to orgmode filetype
+It is inspired by vimwiki plugin
+
 orgwiki.setup({opts})                                            *orgwiki.setup*
-    This function initializes orgWiki by setting keymaps and defining path variables
-    opts is a table that must include the following
+    This function initializes orgWiki by setting keymaps and defining path variables.
+    opts is a table that must include the following: wiki_path, diary_path.
+    Other parameters are optional
 
     Parameters: ~
         {opts}  Table containing configuration options

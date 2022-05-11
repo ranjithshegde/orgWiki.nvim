@@ -58,7 +58,7 @@ function Preview.show_preview(file)
   vim.bo[bufnr].filetype = vim.bo.filetype
   vim.bo[bufnr].modifiable = false
   vim.bo[bufnr].readonly = true
-
+  preview.current_buf = bufnr
   ---The width of offset of a window, occupied by line number column,
   ---fold column and sign column.
   ffi.cdef [[
@@ -89,13 +89,19 @@ function Preview.show_preview(file)
   })
   vim.wo[winid].foldenable = false
   vim.wo[winid].signcolumn = "no"
+  preview.current_win = winid
 
   preview[curbufnr].close = function()
-    vim.api.nvim_win_close(winid, false)
-    vim.api.nvim_buf_delete(bufnr, { force = true, unload = false })
+    if vim.fn.win_gettype(preview.current_win) ~= "unknown" then
+      vim.api.nvim_win_close(preview.current_win, false)
+    end
+    if vim.fn.bufexists(preview.current_buf) == 1 then
+      vim.api.nvim_buf_delete(bufnr, { force = true, unload = false })
+    end
     preview[curbufnr] = nil
-    auid = vim.api.nvim_create_augroup("FoldPreview", { clear = true })
-    vim.g.orgwiki_preview = true
+    preview.current_win = nil
+    preview.current_buf = nil
+    vim.g.orgwiki_preview = false
   end
 
   preview[curbufnr].scroll = function()
@@ -112,9 +118,20 @@ function Preview.show_preview(file)
     auid = vim.api.nvim_create_augroup("org_preview", { clear = true })
   end
 
-  vim.api.nvim_create_autocmd({ "CursorMoved", "BufLeave", "CmdlineEnter", "InsertEnter" }, {
+  vim.api.nvim_create_autocmd({ "CursorMoved", "CmdlineEnter", "InsertEnter" }, {
     group = auid,
     buffer = curbufnr,
+    callback = function()
+      if preview[curbufnr] then
+        preview[curbufnr].close()
+      end
+    end,
+    once = true,
+  })
+
+  vim.api.nvim_create_autocmd({ "BufLeave", "CmdlineEnter", "InsertEnter" }, {
+    group = auid,
+    buffer = preview.current_buf,
     callback = function()
       if preview[curbufnr] then
         preview[curbufnr].close()
@@ -139,17 +156,19 @@ function Preview.show_preview(file)
   })
   vim.keymap.set("n", "<Esc>", preview[curbufnr].close, { buffer = curbufnr, desc = "Close preview" })
   vim.keymap.set("n", "q", preview[curbufnr].close, { buffer = curbufnr, desc = "Close preview" })
+  vim.keymap.set("n", "<Esc>", preview[curbufnr].close, { buffer = bufnr, desc = "Close preview" })
+  vim.keymap.set("n", "q", preview[curbufnr].close, { buffer = bufnr, desc = "Close preview" })
 end
 
-function Preview.open_close(path)
-  if vim.g.orgwiki_preview then
-    vim.g.orgwiki_preview = false
+function Preview.open_or_focus(path)
+  if not vim.g.orgwiki_preview then
+    vim.g.orgwiki_preview = true
     Preview.show_preview(path)
-  elseif not vim.g.orgwiki_preview then
+  elseif vim.g.orgwiki_preview then
+    vim.g.orgwiki_preview = false
     local bufnr = vim.api.nvim_get_current_buf()
     if preview[bufnr] then
-      -- For smoothness to avoid annoying screen flickering.
-      vim.fn.timer_start(1, preview[bufnr].close)
+      vim.fn.win_gotoid(preview.current_win)
     end
   end
 end

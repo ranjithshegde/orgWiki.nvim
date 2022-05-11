@@ -440,8 +440,7 @@ function wiki.hover()
     return
   end
 
-  vim.g.orgwiki_preview = true
-  require("orgWiki.preview").open_close(output)
+  require("orgWiki.preview").open_or_focus(output)
 end
 
 return wiki

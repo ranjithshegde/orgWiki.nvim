@@ -1,0 +1,15 @@
+diary.diaryGenerateIndex	orgWiki.txt	/*diary.diaryGenerateIndex*
+diary.diaryIndexOpen	orgWiki.txt	/*diary.diaryIndexOpen*
+diary.diaryTodayOpen	orgWiki.txt	/*diary.diaryTodayOpen*
+diary.diaryTomorrowOpen	orgWiki.txt	/*diary.diaryTomorrowOpen*
+diary.diaryYesterdayOpen	orgWiki.txt	/*diary.diaryYesterdayOpen*
+orgWiki.nvim	orgWiki.txt	/*orgWiki.nvim*
+orgwiki.setup	orgWiki.txt	/*orgwiki.setup*
+wiki.back	orgWiki.txt	/*wiki.back*
+wiki.deleteLink	orgWiki.txt	/*wiki.deleteLink*
+wiki.followOrCreate	orgWiki.txt	/*wiki.followOrCreate*
+wiki.gotoNext	orgWiki.txt	/*wiki.gotoNext*
+wiki.gotoPrev	orgWiki.txt	/*wiki.gotoPrev*
+wiki.nextWiki	orgWiki.txt	/*wiki.nextWiki*
+wiki.openIndex	orgWiki.txt	/*wiki.openIndex*
+wiki.select	orgWiki.txt	/*wiki.select*

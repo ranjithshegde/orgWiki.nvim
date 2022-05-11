@@ -83,6 +83,16 @@ local createLink = function(words)
     local tag = vim.fn.input "Enter link name: "
     local link = string.format("[[%s][%s]]", words, tag)
     return link
+  elseif not words:match "%." then
+    local filetype = vim.api.nvim_buf_get_option(vim.api.nvim_get_current_buf(), "filetype")
+    if vim.tbl_contains(vim.g.orgwiki_filetypes, filetype) then
+      local link = string.format("[[%s.%s][%s]]", words, filetype, words)
+      return link
+    else
+      local ext = vim.fn.input "Enter filetype extension to use: "
+      local link = string.format("[[%s.%s][%s]]", words, ext, words)
+      return link
+    end
   else
     local tag = vim.fn.fnamemodify(words, ":r")
     local link = string.format("[[%s][%s]]", words, tag)
@@ -202,7 +212,7 @@ local wiki = {}
 ---@param editcmd string eg: "vs","e","tabnew"
 function wiki.openIndex(editcmd)
   local opencmd = editcmd and editcmd .. " " or "e "
-  local current_path = wikiPath[1]
+  local current_path = current_wiki ~= "" and current_wiki or wikiPath[1]
   current_wiki = current_path
   exec("cd " .. current_path)
   exec(opencmd .. "Index.org")
@@ -339,6 +349,11 @@ function wiki.select(editcmd)
   if #wikiPath > 1 then
     vim.ui.select(wikiPath, { prompt = "Choose wiki" }, function(choice)
       current_wiki = choice
+      for index, value in ipairs(wikiPath) do
+        if value == choice then
+          current_index = index
+        end
+      end
       wiki.openIndex(editcmd)
     end)
   else

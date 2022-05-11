@@ -114,6 +114,8 @@ function orgwiki.setup(opts)
     print "Diary path not set"
   end
 
+  vim.g.orgwiki_filetypes = { "org", "norg" }
+
   if not opts.disable_mappings then
     if opts.keys then
       for key, _ in pairs(keys) do

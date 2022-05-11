@@ -62,6 +62,12 @@ local function set_keys(t)
         require("orgWiki.wiki").gotoPrev,
         { buffer = true, desc = "Go to previous link" }
       )
+      vim.keymap.set(
+        "n",
+        t.hover,
+        require("orgWiki.wiki").hover,
+        { buffer = true, desc = "Preview link in popup window" }
+      )
     end,
   })
 end
@@ -71,6 +77,7 @@ local keys = {
   traverse_back = "<BS>",
   goto_next = "]w",
   goto_prev = "[w",
+  hover = "K",
   open_index = "<leader>ww",
   open_next_index = "<leader>wn",
   open_choice_index = "<leader>wc",
@@ -91,6 +98,7 @@ local keys = {
 ---         traverse_back = "<BS>", -- Return to the parent file or top of the link stack
 ---         goto_next = "]w", --  Go to next hyperlink in the file
 ---         goto_prev = "[w", -- Go to prevvious hyperlink in the file
+---         hover = "K", -- Preview the linked file in a popup window
 ---         open_index = "<leader>ww", --  Open the default orgWiki index file
 ---         open_index_tab = "<leader>wt", -- Open the default wiki in a new tab
 ---         open_choice_index = "<leader>wc", --  Open a wiki from list

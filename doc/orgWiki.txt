@@ -13,19 +13,20 @@ orgwiki.setup({opts})                                            *orgwiki.setup*
 		• wiki_path: A list of directories to be recognized as orgWiki
 		• diary_path: A string containing the path to the direcotry where diary entries must be stored
 		• keys: optional table with values to set up keybindings. When any of the keys are omitted, default mappings are used
-		    • create_or_follow = "<CR>", --  Follow hyperlink under cursor
-		    • traverse_back = "<BS>", -- Return to the parent file or top of the link stack
-		    • goto_next = "]w", --  Go to next hyperlink in the file
-		    • goto_prev = "[w", -- Go to prevvious hyperlink in the file
-		    • open_index = "<leader>ww", --  Open the default orgWiki index file
-		    • open_index_tab = "<leader>wt", -- Open the default wiki in a new tab
-		    • open_choice_index = "<leader>wc", --  Open a wiki from list
-		    • open_next_index = "<leader>wn", -- Switch to the next wiki if available
-		    • open_diary_index = "<leader>wi", -- Open the diary index file
-		    • diary_update = "<leader>w<leader>i", -- Update the diary index files with new available entries
-		    • diary_today = "<leader>w<leader>w", -- Open a new diary entry ("Today")
-		    • diary_tomorrow = "<leader>w<leader>t", -- Open a new diary entry ("Tomorrow")
-		    • diary_yesterday = "<leader>w<leader>y", -- Open yesterday's diary entry
+		    • create_or_follow = `"<CR>"`, --  Follow hyperlink under cursor
+		    • traverse_back = `"<BS>"`, -- Return to the parent file or top of the link stack
+		    • goto_next = `"]w"`, --  Go to next hyperlink in the file
+		    • goto_prev = `"[w"`, -- Go to prevvious hyperlink in the file
+		    • hover = `"K"`, -- Preview the linked file in a popup window
+		    • open_index = `"<leader>ww`", --  Open the default orgWiki index file
+		    • open_index_tab = `"<leader>wt`", -- Open the default wiki in a new tab
+		    • open_choice_index = `"<leader>wc`", --  Open a wiki from list
+		    • open_next_index = `"<leader>wn`", -- Switch to the next wiki if available
+		    • open_diary_index = `"<leader>wi`", -- Open the diary index file
+		    • diary_update = `"<leader>w<leader>i`", -- Update the diary index files with new available entries
+		    • diary_today = `"<leader>w<leader>w`", -- Open a new diary entry ("Today")
+		    • diary_tomorrow = `"<leader>w<leader>t`", -- Open a new diary entry ("Tomorrow")
+		    • diary_yesterday = `"<leader>w<leader>y`", -- Open yesterday's diary entry
 
 
 wiki.openIndex({editcmd})                                       *wiki.openIndex*

@@ -41,6 +41,7 @@ if you do not wish for the plugin to create the mappings you can use this option
 - _traverse_back_ = `"<BS>"`, -- Return to the parent file or top of the link stack
 - _goto_next_ = `]w`, -- Go to next hyperlink in the file
 - _goto_prev_ = `"[w"`, -- Go to prevvious hyperlink in the file
+- _hover_ = `"K"`, -- Preview the linked file in a popup window
 - _open_index_ = `"<leader>ww"`, -- Open the default orgWiki index file
 - _open_index_tab_ = `"<leader>wt"`, -- Open the default wiki in a new tab
 - _open_choice_index_ = `"<leader>wc"`, -- Open a wiki from list

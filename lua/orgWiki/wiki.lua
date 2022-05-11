@@ -426,4 +426,22 @@ function wiki.gotoPrev()
   end
 end
 
+function wiki.hover()
+  local line = vim.api.nvim_get_current_line()
+  local output = findLinkString(line)
+  if not output then
+    print "No link under cursor"
+    return
+  end
+
+  output = findPath(output)
+  if not output then
+    print "Broken or non-existant hyperlink"
+    return
+  end
+
+  vim.g.orgwiki_preview = true
+  require("orgWiki.preview").open_close(output)
+end
+
 return wiki

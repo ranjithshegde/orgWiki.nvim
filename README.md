@@ -69,6 +69,6 @@ example
 
 ## TODO
 
-- [x] Diary - Replace hyperlink tag with `#+TITLE:` preamble (if exists)
-- [ ] Add hover popup to preview the contents of hyperlinked file
+- [ ] Diary - Replace hyperlink tag with `#+TITLE:` preamble (if exists)
+- [x] Add hover popup to preview the contents of hyperlinked file
 - Future: Add roadmap

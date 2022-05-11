@@ -67,4 +67,6 @@ example
 
 ## TODO
 
-- Add a proper todo with roadmap!
+- [ ] Diary - Replace hyperlink tag with `#+TITLE:` preamble (if exists)
+- [ ] Add hover popup to preview the contents of hyperlinked file
+- Future: Add roadmap

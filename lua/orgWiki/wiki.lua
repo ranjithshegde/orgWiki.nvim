@@ -426,6 +426,8 @@ function wiki.gotoPrev()
   end
 end
 
+---Find link under cursor and extract path for previewing
+---Open floating preview. If preview already exists, focus floating win
 function wiki.hover()
   local line = vim.api.nvim_get_current_line()
   local output = findLinkString(line)

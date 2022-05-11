@@ -39,7 +39,7 @@ function Preview.show_preview(file)
   for line in link_file:lines() do
     table.insert(lines, line)
   end
-  link_file:close()
+  io.close(link_file)
 
   local indent = #(lines[1]:match "^%s+" or "")
   for i, line in ipairs(lines) do
@@ -129,7 +129,7 @@ function Preview.show_preview(file)
     once = true,
   })
 
-  vim.api.nvim_create_autocmd({ "BufLeave", "CmdlineEnter", "InsertEnter" }, {
+  vim.api.nvim_create_autocmd({ "BufWinLeave", "CmdlineEnter", "InsertEnter" }, {
     group = auid,
     buffer = preview.current_buf,
     callback = function()
@@ -160,6 +160,8 @@ function Preview.show_preview(file)
   vim.keymap.set("n", "q", preview[curbufnr].close, { buffer = bufnr, desc = "Close preview" })
 end
 
+---Open floating preview, if preview already exists, focus floating win
+---@param path string path of file to preview
 function Preview.open_or_focus(path)
   if not vim.g.orgwiki_preview then
     vim.g.orgwiki_preview = true

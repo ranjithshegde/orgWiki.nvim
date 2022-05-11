@@ -12,6 +12,7 @@ _Note: This plugin is still experimental. Would be grateful for any bug reports 
 - Switch between Wikis
 - Create diary entries
 - Autogenerate and update diary index
+- Preview linked file in a popup window
 
 ## Configuration
 
@@ -68,6 +69,6 @@ example
 
 ## TODO
 
-- [ ] Diary - Replace hyperlink tag with `#+TITLE:` preamble (if exists)
+- [x] Diary - Replace hyperlink tag with `#+TITLE:` preamble (if exists)
 - [ ] Add hover popup to preview the contents of hyperlinked file
 - Future: Add roadmap

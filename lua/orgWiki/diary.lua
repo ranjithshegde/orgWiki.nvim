@@ -55,7 +55,7 @@ local getDate = function(day)
 end
 
 local getDiaryfiles = function()
-  local dirs = vim.fn.system "ls ~/Documents/Orgs/diary"
+  local dirs = vim.fn.system("ls " .. diaryPath)
   local list = vim.split(dirs, "\n")
   local result = {}
 

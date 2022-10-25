@@ -33,13 +33,8 @@ function wiki.followOrCreate()
 
   if not output then
     utils.text_around_cword(line, word)
-    output = utils.create_path(word)
-    if not output then
-      return
-    else
-      vim.api.nvim_set_current_line(utils.not_links.full)
-      utils.not_links.full = ""
-    end
+    utils.create_path(word)
+    return
   end
 
   output = utils.find_path(output)

@@ -6,12 +6,11 @@ utils.stack = {}
 
 utils.not_links = { has_before = false, has_after = false, before = "", after = "", full = "" }
 
-local link_pre = ".*%[%["
-local link_post = "%]%].*"
-local link_start = "%[%["
-local link_middle = "%]%["
-local link_end = "%]%]"
-local link_pattern = "%[.*%]%[.*%]"
+local links = {
+  pre = "(.*)%[%[",
+  post = "%]%](.*)",
+  pattern_capture = "%[%[(.*)%]%[(.*)%]%]",
+}
 
 utils.link_types = {
   file = "file:",
@@ -49,15 +48,13 @@ end
 ---Parses the link string and maps the text before and after the link into a table
 ---@param line string Line to parse
 function utils.text_in_link(line)
-  if line:find(link_pre) then
-    local before = line:match(link_pre)
-    before = before:gsub(link_start, "")
+  local before = line:match(links.pre)
+  if before ~= nil and before ~= "" then
     utils.not_links.has_before = true
     utils.not_links.before = before
   end
-  if line:find(link_post) then
-    local after = line:match(link_post)
-    after = after:gsub(link_end, "")
+  local after = line:match(links.post)
+  if after ~= nil and after ~= "" then
     utils.not_links.has_after = true
     utils.not_links.after = after
     table.insert(utils.not_links, after)
@@ -67,15 +64,13 @@ end
 ---Parses the string and maps the text before and after the <cWORD> into a table
 ---@param line string Line to parse
 function utils.text_around_cword(line, word)
-  if line:find(".*" .. word) then
-    local before = line:match(".*" .. word)
-    before = before:gsub(word, "")
+  local before = line:match("(.*)" .. word)
+  if before ~= nil and before ~= "" then
     utils.not_links.has_before = true
     utils.not_links.before = before
   end
-  if line:find(word .. ".*") then
-    local after = line:match(word .. ".*")
-    after = after:gsub(word, "")
+  local after = line:match(word .. "(.*)")
+  if after ~= nil and after ~= "" then
     utils.not_links.has_after = true
     utils.not_links.after = after
     table.insert(utils.not_links, after)
@@ -139,7 +134,9 @@ function utils.follow_link(link)
     newwin = utils.new_stack(winnr)
   end
 
-  if vim.loop.fs_stat(link).type ~= "directory" then
+  local fs = vim.loop.fs_stat(link)
+
+  if fs and fs.type ~= "directory" then
     vim.cmd("e " .. link)
     vim.cmd "lcd %:h:t"
 
@@ -167,33 +164,21 @@ end
 
 ---Parse the input line for link-format string
 ---@param line string Line to be parsed
----@return string nil if no link, self if link exists
+---@return string|nil nil if no link, url if link exists
 function utils.find_link_string(line)
-  local output = line:match(link_pattern)
-  if not output then
+  local uri, tag = line:match(links.pattern_capture)
+  if not (uri and tag) then
     return nil
   end
 
   utils.text_in_link(line)
-  return output
+  return uri
 end
 
 ---Parse the input line for the file_path of link
 ---@param link string Line to be parsed
 ---@return string nil if no link, path if exists
 function utils.find_path(link)
-  link = link:gsub(link_start, "")
-  if not link then
-    print "Link does not follow proper syntax"
-    return nil
-  end
-
-  link = link:gsub(link_middle .. ".*", "")
-  if not link then
-    print "Syntax error: Wrong formatting of link"
-    return nil
-  end
-
   if link:match(utils.link_types.file) then
     link = link:gsub(utils.link_types.file, "")
   end
@@ -202,10 +187,8 @@ end
 
 ---Creates the hyperlink for the word
 ---@param word string The word to be turned into hyperlink, and used as the link tag
----@return string the hyperlink
 function utils.create_path(word)
-  print "Link does not point to file"
-  local line
+  vim.notify "Link does not point to file"
   vim.ui.select({ "yes", "no" }, { prompt = "Create link? " }, function(choice)
     if choice == "yes" then
       local link = utils.create_link(word)
@@ -214,20 +197,19 @@ function utils.create_path(word)
         utils.not_links.has_before = false
         utils.not_links.before = ""
       end
-      line = link
       utils.not_links.full = utils.not_links.full .. link
       if utils.not_links.has_after then
         utils.not_links.full = utils.not_links.full .. utils.not_links.after
-
         utils.not_links.has_after = false
         utils.not_links.after = ""
       end
+      vim.api.nvim_set_current_line(utils.not_links.full)
+      utils.not_links.full = ""
+      require("orgWiki.wiki").followOrCreate()
     else
       utils.clear_text_link_table()
-      return nil
     end
   end)
-  return line
 end
 
 return utils

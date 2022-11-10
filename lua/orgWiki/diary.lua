@@ -62,7 +62,18 @@ local getDiaryfiles = function()
   for _, data in ipairs(list) do
     if not string.find(data, "index") then
       if data ~= "" then
-        table.insert(result, string.format("+ [[%s][%s]]", data, vim.fn.fnamemodify(tostring(data), ":r")))
+        local ext = vim.fn.fnamemodify(data, ":e")
+        if ext and ext == "org" then
+          table.insert(
+            result,
+            string.format(
+              "+ [[%s%s][%s]]",
+              require("orgWiki.utils").link_types.file,
+              data,
+              vim.fn.fnamemodify(tostring(data), ":r")
+            )
+          )
+        end
       end
     end
   end

@@ -35,7 +35,7 @@ local function set_keys(t)
     "n",
     t.diary_yesterday,
     require("orgWiki.diary").diaryYesterdayOpen,
-    { desc = "Open tomorrow's orgWiki Diary" }
+    { desc = "Open yesterdays's orgWiki Diary" }
   )
   vim.keymap.set(
     "n",

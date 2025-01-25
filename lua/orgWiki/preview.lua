@@ -1,4 +1,3 @@
-local ffi = require "ffi"
 local Preview = {}
 
 local border_shift = { -1, -1, -1, -1 }
@@ -24,7 +23,7 @@ function Preview.show_preview(file)
   ---The maximum line length of the region.
   local max_line_len = 0
 
-  if not vim.loop.fs_stat(file) then
+  if not vim.uv.fs_stat(file) then
     print "File unreadable or broken hyperlink"
     return
   end
@@ -34,6 +33,7 @@ function Preview.show_preview(file)
   local link_file, msg = io.open(file, "r")
   if not link_file then
     print(msg)
+    return
   end
 
   for line in link_file:lines() do
@@ -58,13 +58,9 @@ function Preview.show_preview(file)
   vim.bo[bufnr].filetype = vim.bo.filetype
   vim.bo[bufnr].modifiable = false
   vim.bo[bufnr].readonly = true
-  preview.current_buf = bufnr
-  ---The width of offset of a window, occupied by line number column,
-  ---fold column and sign column.
-  ffi.cdef [[
-    int curwin_col_off(void);
-    ]]
-  local gutter_width = ffi.C.curwin_col_off()
+
+  ---Estimate gutter width based on current window options
+  local gutter_width = vim.o.numberwidth + (vim.wo.signcolumn == "no" and 0 or 2) + (vim.wo.foldenable and 1 or 0)
 
   ---The number of columns from the left boundary of the preview window to the
   ---right boundary of the current window.
@@ -89,29 +85,37 @@ function Preview.show_preview(file)
   })
   vim.wo[winid].foldenable = false
   vim.wo[winid].signcolumn = "no"
-  preview.current_win = winid
+
+  preview[curbufnr] = {
+    winid = winid,
+    bufnr = bufnr,
+  }
 
   preview[curbufnr].close = function()
-    if vim.fn.win_gettype(preview.current_win) ~= "unknown" then
-      vim.api.nvim_win_close(preview.current_win, false)
+    if vim.api.nvim_win_is_valid(winid) then
+      pcall(vim.api.nvim_win_close, winid, false)
     end
-    if vim.fn.bufexists(preview.current_buf) == 1 then
-      vim.api.nvim_buf_delete(bufnr, { force = true, unload = false })
+
+    if vim.api.nvim_buf_is_valid(bufnr) then
+      pcall(vim.api.nvim_buf_delete, bufnr, { force = true })
     end
+
     preview[curbufnr] = nil
-    preview.current_win = nil
-    preview.current_buf = nil
     vim.g.orgwiki_preview = false
   end
 
   preview[curbufnr].scroll = function()
     room_below = vim.api.nvim_win_get_height(0) - vim.fn.winline() + 1
-    vim.api.nvim_win_set_height(winid, #lines < room_below and #lines or room_below)
+    if vim.api.nvim_win_is_valid(winid) then
+      pcall(vim.api.nvim_win_set_height, winid, #lines < room_below and #lines or room_below)
+    end
   end
 
   preview[curbufnr].resize = function()
     room_right = vim.api.nvim_win_get_width(0) - gutter_width - indent
-    vim.api.nvim_win_set_width(winid, max_line_len < room_right and max_line_len or room_right)
+    if vim.api.nvim_win_is_valid(winid) then
+      pcall(vim.api.nvim_win_set_width, winid, max_line_len < room_right and max_line_len or room_right)
+    end
   end
 
   if not auid then
@@ -131,7 +135,7 @@ function Preview.show_preview(file)
 
   vim.api.nvim_create_autocmd({ "BufWinLeave", "CmdlineEnter", "InsertEnter" }, {
     group = auid,
-    buffer = preview.current_buf,
+    buffer = bufnr,
     callback = function()
       if preview[curbufnr] then
         preview[curbufnr].close()
@@ -144,16 +148,22 @@ function Preview.show_preview(file)
     group = auid,
     buffer = bufnr,
     callback = function()
-      preview[curbufnr].scroll()
+      if preview[curbufnr] and preview[curbufnr].scroll then
+        preview[curbufnr].scroll()
+      end
     end,
   })
+
   vim.api.nvim_create_autocmd("VimResized", {
     group = auid,
     buffer = bufnr,
     callback = function()
-      preview[curbufnr].resize()
+      if preview[curbufnr] and preview[curbufnr].resize then
+        preview[curbufnr].resize()
+      end
     end,
   })
+
   vim.keymap.set("n", "<Esc>", preview[curbufnr].close, { buffer = curbufnr, desc = "Close preview" })
   vim.keymap.set("n", "q", preview[curbufnr].close, { buffer = curbufnr, desc = "Close preview" })
   vim.keymap.set("n", "<Esc>", preview[curbufnr].close, { buffer = bufnr, desc = "Close preview" })
@@ -169,8 +179,8 @@ function Preview.open_or_focus(path)
   elseif vim.g.orgwiki_preview then
     vim.g.orgwiki_preview = false
     local bufnr = vim.api.nvim_get_current_buf()
-    if preview[bufnr] then
-      vim.fn.win_gotoid(preview.current_win)
+    if preview[bufnr] and preview[bufnr].winid then
+      vim.fn.win_gotoid(preview[bufnr].winid)
     end
   end
 end

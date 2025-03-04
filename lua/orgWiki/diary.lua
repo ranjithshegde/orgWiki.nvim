@@ -1,7 +1,8 @@
 local diary = {}
 local exec = vim.api.nvim_command
 local diaryPath = vim.fn.expand(vim.g.orgwiki_diary_path)
-local diaryIndex = diaryPath .. "index.org"
+local diaryFileName = vim.fn.expand(vim.g.orgwiki_diary_index_filename)
+local diaryIndex = diaryPath .. diaryFileName
 
 local diaryHeader = [[#+:TITLE: OrgWiki Diary index file
 
@@ -165,7 +166,7 @@ end
 function diary.diaryIndexOpen(editcmd)
   local opencmd = editcmd and editcmd .. " " or "e "
   exec("cd " .. diaryPath)
-  vim.cmd(opencmd .. "index.org")
+  vim.cmd(opencmd .. diaryFileName)
 end
 
 return diary

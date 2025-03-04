@@ -4,6 +4,7 @@ local linkLines = {}
 local isIndexed = false
 
 local wikiPath = vim.g.orgwiki_path
+local wikiIndexFileName = vim.g.orgwiki_index_filename
 
 local current_wiki = ""
 local current_index
@@ -17,7 +18,7 @@ function wiki.openIndex(editcmd)
   local current_path = current_wiki ~= "" and current_wiki or wikiPath[1]
   current_wiki = current_path
   exec("cd " .. current_path)
-  exec(opencmd .. "Index.org")
+  exec(opencmd .. wikiIndexFileName)
 end
 
 ---If <cWORD> is not a hyperlink, create hyperlink interactively and jump to the link

@@ -123,6 +123,18 @@ function orgwiki.setup(opts)
   end
 
   vim.g.orgwiki_filetypes = { "org", "norg" }
+  if opts.index_filename then
+    vim.g.orgwiki_index_filename = opts.index_filename
+  else
+    vim.g.orgwiki_index_filename = "Index.org"
+  end
+
+  if opts.diary_index_filename then
+    vim.g.orgwiki_diary_index_filename = opts.diary_index_filename
+  else
+    vim.g.orgwiki_diary_index_filename = "Index.org"
+  end
+
 
   if not opts.disable_mappings then
     if opts.keys then

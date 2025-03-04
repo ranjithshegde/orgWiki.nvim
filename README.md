@@ -33,6 +33,10 @@ opts as a table that must include the following
 
 **diary_path**: A string containing the path to the direcotry where diary entries must be stored
 
+**index_filename**: A string containing wiki index file name (default value: `"Index.org"`)
+
+**diary_index_filename**: A string containing diary index file name (default value: `"Index.org"`)
+
 if you do not wish for the plugin to create the mappings you can use this option
 **disable_mappings** = true
 

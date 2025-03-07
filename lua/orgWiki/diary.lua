@@ -61,7 +61,7 @@ local getDiaryfiles = function()
   local result = {}
 
   for _, data in ipairs(list) do
-    if not string.find(data, "index") then
+    if not string.find(data, diaryFileName) then
       if data ~= "" then
         local ext = vim.fn.fnamemodify(data, ":e")
         if ext and ext == "org" then
